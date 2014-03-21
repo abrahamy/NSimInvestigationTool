@@ -7,11 +7,11 @@ if sys.platform == 'win32':
     base = 'Win32GUI'
 
 setup(
-        name='NSim',
+        name='application.py',
         version='0.1',
         url='www.swglobal.com',
         author='Abraham Yusuf',
         author_email='yabraham@swglobal.com',
-        description='NSim Demographics Viewer',
+        description='NSim Investigation Tool',
         options={'build_exe': {'includes': 'atexit'}},
-        executables=[Executable('NSim.py', base=base)])
+        executables=[Executable('application.py', base=base)])
