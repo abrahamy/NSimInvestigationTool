@@ -16,9 +16,23 @@ class SearchDlg(QtWidgets.QDialog, Ui_SearchDlg):
         self.setupUi(self)
         self.retranslateUi(self)
 
-        self.progressBar.setVisible(False)
-
         self.searchPath = None
+        self.logger = self.__class__.get_logger()
+
+    @classmethod
+    def get_logger(cls):
+        import logging
+        import logging.handlers
+
+        logger = logging.getLogger('NSimInvestigationToolLogger')
+        logger.setLevel(logging.DEBUG)
+
+        handler = logging.handlers.RotatingFileHandler('logs/log.txt', maxBytes=1024, backupCount=5)
+        handler.setFormatter(logging.Formatter(fmt='%(asctime)s %(message)s'))
+
+        logger.addHandler(handler)
+
+        return logger
 
     @QtCore.pyqtSlot('QString')
     def on_txtMobileNo_textChanged(self, text):
@@ -52,6 +66,8 @@ class SearchDlg(QtWidgets.QDialog, Ui_SearchDlg):
                 self.finder.signals.notifyProgress.disconnect(self.updateProgress)
                 self.finder.signals.itemFound.disconnect(self.updateFoundList)
                 self.finder.signals.finished.disconnect(self.on_search_finished)
+                self.finder.signals.message.disconnect(self.message_received)
+                del self.finder
             except:
                 pass
 
@@ -65,15 +81,16 @@ class SearchDlg(QtWidgets.QDialog, Ui_SearchDlg):
         self.finder.signals.notifyProgress.connect(self.updateProgress)
         self.finder.signals.itemFound.connect(self.updateFoundList)
         self.finder.signals.finished.connect(self.on_search_finished)
+        self.finder.signals.message.connect(self.message_received)
 
-        self.progressBar.setVisible(True)
+        self.lblProgress.setText('')
         self.setCursor(QtCore.Qt.BusyCursor)
 
         QtCore.QThreadPool.globalInstance().start(self.finder)
 
-    @QtCore.pyqtSlot(int)
-    def updateProgress(self, pos):
-        self.progressBar.setValue(pos)
+    @QtCore.pyqtSlot(int, int)
+    def updateProgress(self, currentCount, totalCount):
+        self.lblProgress.setText('Processing %s of %s packets' % (currentCount, totalCount))
 
     @QtCore.pyqtSlot(str, str)
     def updateFoundList(self, packet, xmlfilename):
@@ -84,12 +101,15 @@ class SearchDlg(QtWidgets.QDialog, Ui_SearchDlg):
 
     @QtCore.pyqtSlot()
     def on_search_finished(self):
-        self.progressBar.setVisible(False)
-        self.progressBar.setValue(0)
+        self.lblProgress.setText('')
         self.setCursor(QtCore.Qt.ArrowCursor)
         QtWidgets.QMessageBox.information(self, 'Search completed!', 'Found %s matches.' % self.tableWidget.rowCount())
 
         del self.finder
+
+    @QtCore.pyqtSlot(str)
+    def message_received(self, msg):
+        self.logger.debug(msg)
 
     @QtCore.pyqtSlot(QtWidgets.QTableWidgetItem)
     def on_tableWidget_itemClicked(self, item):
@@ -98,4 +118,6 @@ class SearchDlg(QtWidgets.QDialog, Ui_SearchDlg):
         dialog = ViewerDlg(parent=self, item=FEPRecord(packet, xmlfile))
         dialog.setModal(True)
         dialog.show()
-        #dialog.exec()
+
+    def closeEvent(self, evt):
+        self.deleteLater()

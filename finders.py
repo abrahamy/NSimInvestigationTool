@@ -1,7 +1,6 @@
 __author__ = 'Administrator'
 
 import os
-import sys
 import zipfile
 
 from PyQt5 import QtCore
@@ -20,10 +19,15 @@ class MobileNumberFinder(QtCore.QRunnable):
         zfiles = [os.path.join(self.task.folder, i) for i in os.listdir(self.task.folder) if i.lower().endswith('.zip')]
         totalCount = len(zfiles)
         currentCount = 0
+        numFound = 0
 
         for zfile in zfiles:
+            currentCount += 1
+            self.signals.notifyProgress.emit(currentCount, totalCount)
+            self.signals.message.emit('Processing %s of %s packets' % (currentCount, totalCount))
             try:
                 with zipfile.ZipFile(zfile) as packet:
+                    self.signals.message.emit('Current packet: [%s]' % zfile)
                     xmls = [i for i in packet.namelist() if i.lower().endswith('.xml')]
 
                     for xmlfile in xmls:
@@ -31,22 +35,22 @@ class MobileNumberFinder(QtCore.QRunnable):
                         haystack = packet.open(xmlfile).read().decode()
 
                         if haystack.find(needle) is not -1:
+                            numFound += 1
+                            msg = 'Found match in [%s] from [%s]. Total matches so far: %s' % (zfile, xmlfile, numFound)
                             self.signals.itemFound.emit(zfile, xmlfile)
+                            self.signals.message.emit(msg)
 
             except Exception as e:
-                sys.stderr.write(repr(e))
-                raise
+                self.signals.message.emit(repr(e))
 
-            currentCount += 1
-            progress = (float(currentCount) / totalCount) * 100
-            self.signals.notifyProgress.emit(int(progress))
-
+        self.signals.message.emit('Search completed for %s in %s' % (self.task.mobileno, self.task.folder))
         self.signals.finished.emit()
 
 class FinderSignals(QtCore.QObject):
-    notifyProgress = QtCore.pyqtSignal(int)
+    notifyProgress = QtCore.pyqtSignal(int, int)
     finished = QtCore.pyqtSignal()
     itemFound = QtCore.pyqtSignal(str, str, name='itemFound')  # arg1: packetName, arg2: xmlFileName
+    message = QtCore.pyqtSignal(str)
 
 
 class MobileNumberFinderTask(object):

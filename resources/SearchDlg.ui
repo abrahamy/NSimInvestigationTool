@@ -119,15 +119,19 @@
            </widget>
           </item>
           <item row="2" column="3">
-           <widget class="QProgressBar" name="progressBar">
-            <property name="value">
-             <number>0</number>
+           <widget class="QLabel" name="lblProgress">
+            <property name="minimumSize">
+             <size>
+              <width>350</width>
+              <height>0</height>
+             </size>
             </property>
-            <property name="textVisible">
-             <bool>false</bool>
+            <property name="styleSheet">
+             <string notr="true">font: italic 12pt &quot;MS Shell Dlg 2&quot;;
+color: rgb(6, 101, 255);</string>
             </property>
-            <property name="invertedAppearance">
-             <bool>false</bool>
+            <property name="text">
+             <string/>
             </property>
            </widget>
           </item>

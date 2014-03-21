@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'SearchDlg.ui'
+# Form implementation generated from reading ui file 'resources/SearchDlg.ui'
 #
-# Created: Wed Mar 19 15:28:16 2014
+# Created: Fri Mar 21 10:42:55 2014
 #      by: PyQt5 UI code generator 5.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -68,12 +68,13 @@ class Ui_SearchDlg(object):
         self.btnSearch.setMaximumSize(QtCore.QSize(77, 31))
         self.btnSearch.setObjectName("btnSearch")
         self.gridLayout.addWidget(self.btnSearch, 2, 1, 1, 2)
-        self.progressBar = QtWidgets.QProgressBar(self.groupBox)
-        self.progressBar.setProperty("value", 0)
-        self.progressBar.setTextVisible(False)
-        self.progressBar.setInvertedAppearance(False)
-        self.progressBar.setObjectName("progressBar")
-        self.gridLayout.addWidget(self.progressBar, 2, 3, 1, 1)
+        self.lblProgress = QtWidgets.QLabel(self.groupBox)
+        self.lblProgress.setMinimumSize(QtCore.QSize(350, 0))
+        self.lblProgress.setStyleSheet("font: italic 12pt \"MS Shell Dlg 2\";\n"
+"color: rgb(6, 101, 255);")
+        self.lblProgress.setText("")
+        self.lblProgress.setObjectName("lblProgress")
+        self.gridLayout.addWidget(self.lblProgress, 2, 3, 1, 1)
         self.horizontalLayout.addLayout(self.gridLayout)
         self.verticalLayout_2.addWidget(self.groupBox)
         self.verticalLayout = QtWidgets.QVBoxLayout()
