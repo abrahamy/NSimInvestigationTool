@@ -12,7 +12,7 @@ class NSimApplication(QtWidgets.QApplication):
         super(NSimApplication, self).__init__(sys.argv)
 
         self.setOrganizationName('SW Global Limited')
-        self.setApplicationName('NSim Demographics Viewer')
+        self.setApplicationName('NSim Investigation Tool')
 
         window = SearchDlg()
         window.show()
