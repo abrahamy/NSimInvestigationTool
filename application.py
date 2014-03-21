@@ -1,4 +1,4 @@
-__author__ = 'Administrator'
+__author__ = 'Abraham Yusuf <yabraham@swglobal.com>'
 
 import sys
 from PyQt5 import QtWidgets
