@@ -34,3 +34,8 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# JetBrains IDE Artefacts
+.idea
+*.iml
+*.iws
