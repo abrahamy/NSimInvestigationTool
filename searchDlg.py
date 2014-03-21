@@ -36,9 +36,7 @@ class SearchDlg(QtWidgets.QDialog, Ui_SearchDlg):
 
     @QtCore.pyqtSlot('QString')
     def on_txtMobileNo_textChanged(self, text):
-        try:
-            int(text[-1])
-        except:
+        if '0123456789,'.find(text[-1]) == -1:
             self.txtMobileNo.setText(text[:-1])
 
     @QtCore.pyqtSlot()
@@ -120,4 +118,5 @@ class SearchDlg(QtWidgets.QDialog, Ui_SearchDlg):
         dialog.show()
 
     def closeEvent(self, evt):
-        self.deleteLater()
+        import sys
+        sys.exit(0)

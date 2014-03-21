@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'resources/SearchDlg.ui'
 #
-# Created: Fri Mar 21 10:42:55 2014
+# Created: Fri Mar 21 14:02:50 2014
 #      by: PyQt5 UI code generator 5.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -35,7 +35,6 @@ class Ui_SearchDlg(object):
         self.label_2.setObjectName("label_2")
         self.gridLayout.addWidget(self.label_2, 0, 0, 1, 1)
         self.txtMobileNo = QtWidgets.QLineEdit(self.groupBox)
-        self.txtMobileNo.setMaxLength(11)
         self.txtMobileNo.setObjectName("txtMobileNo")
         self.gridLayout.addWidget(self.txtMobileNo, 0, 1, 1, 3)
         self.label_3 = QtWidgets.QLabel(self.groupBox)
@@ -109,7 +108,7 @@ class Ui_SearchDlg(object):
         _translate = QtCore.QCoreApplication.translate
         SearchDlg.setWindowTitle(_translate("SearchDlg", "NSIM Demographics Viewer"))
         self.groupBox.setTitle(_translate("SearchDlg", "Search Parameters"))
-        self.label_2.setText(_translate("SearchDlg", "Mobile No.:"))
+        self.label_2.setText(_translate("SearchDlg", "Mobile No(s).:"))
         self.label_3.setText(_translate("SearchDlg", "FEP/MNO Folder:"))
         self.btnSearch.setText(_translate("SearchDlg", "Search"))
         self.label.setText(_translate("SearchDlg", "Matched Items"))

@@ -14,6 +14,27 @@ class MobileNumberFinder(QtCore.QRunnable):
 
         self.task = task
         self.signals = FinderSignals()
+        self._mobileno_list = self.__class__.get_mobileno_list(self.task.mobileno)
+
+    @classmethod
+    def get_mobileno_list(cls, str_mobileno):
+        mobileno_list = []
+        for mobileno in [i.strip() for i in str_mobileno.split(',')]:
+            mobileno_list.append(mobileno)
+            if not mobileno.startswith('0'):
+                mobileno_list.append('0%s' % mobileno)
+
+        return mobileno_list
+
+    def check_exists(self, haystack):
+        for needle in self._mobileno_list:
+            try:
+                haystack.index(needle)
+                return True
+            except ValueError:
+                continue
+
+        return False
 
     def run(self):
         self.signals.message.emit('Search started for %s in %s' % (self.task.mobileno, self.task.folder))
@@ -32,10 +53,9 @@ class MobileNumberFinder(QtCore.QRunnable):
                     xmls = [i for i in packet.namelist() if i.lower().endswith('.xml')]
 
                     for xmlfile in xmls:
-                        needle = self.task.mobileno.strip()
                         haystack = packet.open(xmlfile).read().decode()
 
-                        if haystack.find(needle) is not -1:
+                        if self.check_exists(haystack):
                             numFound += 1
                             msg = 'Found match in [%s] from [%s]. Total matches so far: %s' % (zfile, xmlfile, numFound)
                             self.signals.itemFound.emit(zfile, xmlfile)
