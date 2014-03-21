@@ -1,0 +1,11 @@
+<RCC>
+  <qresource prefix="images">
+    <file>go-first.png</file>
+    <file>go-last.png</file>
+    <file>go-next.png</file>
+    <file>go-previous.png</file>
+    <file>Folder-Open-icon.png</file>
+    <file>fingerprint.png</file>
+    <file>person.png</file>
+  </qresource>
+</RCC>
