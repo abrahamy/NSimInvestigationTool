@@ -16,6 +16,7 @@ class MobileNumberFinder(QtCore.QRunnable):
         self.signals = FinderSignals()
 
     def run(self):
+        self.signals.message.emit('Search started for %s in %s' % (self.task.mobileno, self.task.folder))
         zfiles = [os.path.join(self.task.folder, i) for i in os.listdir(self.task.folder) if i.lower().endswith('.zip')]
         totalCount = len(zfiles)
         currentCount = 0
@@ -41,7 +42,7 @@ class MobileNumberFinder(QtCore.QRunnable):
                             self.signals.message.emit(msg)
 
             except Exception as e:
-                self.signals.message.emit(repr(e))
+                self.signals.message.emit('Encountered and error while processing [%s]. Error Message: [%s]' % (zfile, repr(e)))
 
         self.signals.message.emit('Search completed for %s in %s' % (self.task.mobileno, self.task.folder))
         self.signals.finished.emit()

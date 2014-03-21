@@ -27,7 +27,7 @@ class SearchDlg(QtWidgets.QDialog, Ui_SearchDlg):
         logger = logging.getLogger('NSimInvestigationToolLogger')
         logger.setLevel(logging.DEBUG)
 
-        handler = logging.handlers.RotatingFileHandler('logs/log.txt', maxBytes=1024, backupCount=5)
+        handler = logging.handlers.RotatingFileHandler('logs/log.txt', maxBytes=1024000, backupCount=10)
         handler.setFormatter(logging.Formatter(fmt='%(asctime)s %(message)s'))
 
         logger.addHandler(handler)
