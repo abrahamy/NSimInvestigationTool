@@ -23,8 +23,12 @@ class MobileNumberFinder(QtCore.QRunnable):
             mobileno_list.append(mobileno)
             if not mobileno.startswith('0'):
                 mobileno_list.append('0%s' % mobileno)
+                mobileno_list.append('234%s' % mobileno)
+                mobileno_list.append('+234%s' % mobileno)
             else:
                 mobileno_list.append(mobileno[1:])
+                mobileno_list.append('234%s' % mobileno[1:])
+                mobileno_list.append('+234%s' % mobileno[1:])
 
         return mobileno_list
 
