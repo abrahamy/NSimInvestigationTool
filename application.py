@@ -3,7 +3,7 @@ __author__ = 'Abraham Yusuf <yabraham@swglobal.com>'
 import sys
 from PyQt5 import QtWidgets
 
-from searchDlg import SearchDlg
+from MainWidget import MainWidget
 
 
 class NSimApplication(QtWidgets.QApplication):
@@ -14,7 +14,7 @@ class NSimApplication(QtWidgets.QApplication):
         self.setOrganizationName('SW Global Limited')
         self.setApplicationName('NSim Investigation Tool')
 
-        window = SearchDlg()
+        window = MainWidget()
         window.show()
 
         self.exec_()
