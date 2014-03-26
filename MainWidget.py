@@ -3,7 +3,8 @@ __author__ = 'Abraham Yusuf <yabraham@swglobal.com>'
 from PyQt5 import QtCore, QtWidgets
 
 from ui_MainWidget import Ui_MainWidget
-from SearchForm import SearchForm
+from DBSearch import DBSearch
+from InfoSearch import InfoSearch
 
 
 class MainWidget(QtWidgets.QTabWidget, Ui_MainWidget):
@@ -16,8 +17,8 @@ class MainWidget(QtWidgets.QTabWidget, Ui_MainWidget):
 
     @QtCore.pyqtSlot()
     def on_btnInfoSearch_clicked(self):
-        pass
+        self.insertTab(InfoSearch(), 1)
 
     @QtCore.pyqtSlot()
     def on_btnDbSearch_click(self):
-        pass
+        self.insertTab(DBSearch(), 1)

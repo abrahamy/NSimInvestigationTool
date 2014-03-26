@@ -1,6 +1,7 @@
 __author__ = 'Abraham Yusuf <yabraham@swglobal.com>'
 
 import os
+import logging
 
 import pymssql
 from PyQt5 import QtCore
@@ -27,9 +28,10 @@ class DatabaseFinder(QtCore.QRunnable):
 
         self.mobile_numbers = task.mobile_numbers
         self.signals = SignalFactory()
+        self.logger = logging.getLogger(__path__)
 
     def run(self):
-        self.signals.info.emit('Database search started')
+        self.logger.info('Database search started')
         try:
             server, user, password, db = connection_str.split(';')
             with pymssql.connect(server, user, password, db) as conn:
@@ -41,6 +43,7 @@ class DatabaseFinder(QtCore.QRunnable):
                         result.append(row)
 
                     self.signals.completedWithResult.emit(tuple(result))
+                    self.logger.info('Database search completed')
 
         except Exception as e:
-            self.signals.info.emit('Encountered and error in database search. Error Message: [%s]' % repr(e))
+            self.logger.error('Encountered and error in database search. Error Message: [%s]' % repr(e))
