@@ -2,14 +2,14 @@ __author__ = 'Abraham Yusuf <yabraham@swglobal.com>'
 
 import logging
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 
-from ui_SearchForm import Ui_SearchForm
+from ui_DBSearch import Ui_DBSearch
 from finders import DatabaseFinder
 from finders.tasks import FindInDb, clean
 
 
-class DBSearch(QtWidgets.QWidget, Ui_SearchForm):
+class DBSearch(QtWidgets.QWidget, Ui_DBSearch):
 
     def __init__(self, parent=None):
         super(DBSearch, self).__init__(parent)
@@ -18,6 +18,7 @@ class DBSearch(QtWidgets.QWidget, Ui_SearchForm):
         self.retranslateUi(self)
 
         self.lblStatus.setText('')
+        self.btnSaveAs.setEnabled(False)
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.on_timeout)
 
@@ -27,6 +28,15 @@ class DBSearch(QtWidgets.QWidget, Ui_SearchForm):
         self.finder = None
 
         self.logger = logging.getLogger(__name__)
+
+    @QtCore.pyqtSlot()
+    def on_txtMobileNos_textChanged(self):
+        text = self.txtMobileNos.toPlainText()
+        if text[-1] not in '0123456789,':
+            self.txtMobileNos.setPlainText(text[:-1])
+            cursor = self.txtMobileNos.textCursor()
+            cursor.movePosition(QtGui.QTextCursor.End)
+            self.txtMobileNos.setTextCursor(cursor)
 
     @QtCore.pyqtSlot()
     def on_btnGetFile_clicked(self):
@@ -43,27 +53,19 @@ class DBSearch(QtWidgets.QWidget, Ui_SearchForm):
                 self.logger.error(repr(e))
                 QtWidgets.QMessageBox.critical(self, 'Error', 'Unable to read from selected file.')
 
-    @QtCore.pyqtSlot(str)
-    def on_txtMobileNos_textChanged(self, text):
-        if text[-1] not in '0123456789,':
-            self.txtMobileNos.setText(text[:-1])
-
     @QtCore.pyqtSlot()
     def on_btnSearch_clicked(self):
         if self.txtMobileNos.toPlainText().strip() == '':
             QtWidgets.QMessageBox.information(self, 'Info', 'You have not entered a mobile number.')
             return
 
-        if self.lblFolder.text().strip() == '':
-            QtWidgets.QMessageBox.information(self, 'Info', 'You have not selected an FEP/MNO folder.')
-            return
-
         self.txtResult.setPlainText('')
+        self.btnSaveAs.setEnabled(False)
 
         self.startSearch()
 
     def startSearch(self):
-        task = FindInDb(self.txtMobileNo.toPlainText().strip())
+        task = FindInDb(self.txtMobileNos.toPlainText().strip())
         self.finder = DatabaseFinder(task)
 
         self.finder.signals.completedWithResult.connect(self.on_search_completed)
@@ -79,6 +81,10 @@ class DBSearch(QtWidgets.QWidget, Ui_SearchForm):
     def on_search_completed(self, rows):
         self.timer.stop()
         self.btnSearch.setEnabled(True)
+
+        if self.txtResult.toPlainText().strip():
+            self.btnSaveAs.setEnabled(True)
+
         self.lblStatus.setText('')
         self.setCursor(QtCore.Qt.ArrowCursor)
         self.finder = None

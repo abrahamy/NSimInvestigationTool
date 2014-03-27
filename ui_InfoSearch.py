@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'InfoSearch.ui'
 #
-# Created: Wed Mar 26 14:40:19 2014
+# Created: Thu Mar 27 11:08:38 2014
 #      by: PyQt5 UI code generator 5.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -86,17 +86,24 @@ class Ui_InfoSearch(object):
 "font: 10pt \"Segoe UI\";")
         self.lblResult.setObjectName("lblResult")
         self.verticalLayout_2.addWidget(self.lblResult)
-        self.tblResult = QtWidgets.QTableView(InfoSearch)
+        self.tblResult = QtWidgets.QTableWidget(InfoSearch)
         self.tblResult.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.tblResult.setTabKeyNavigation(False)
         self.tblResult.setAlternatingRowColors(True)
         self.tblResult.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.tblResult.setColumnCount(2)
         self.tblResult.setObjectName("tblResult")
+        self.tblResult.setRowCount(0)
+        item = QtWidgets.QTableWidgetItem()
+        self.tblResult.setHorizontalHeaderItem(0, item)
+        item = QtWidgets.QTableWidgetItem()
+        self.tblResult.setHorizontalHeaderItem(1, item)
+        self.tblResult.horizontalHeader().setVisible(True)
         self.tblResult.horizontalHeader().setCascadingSectionResizes(True)
-        self.tblResult.horizontalHeader().setDefaultSectionSize(140)
-        self.tblResult.horizontalHeader().setMinimumSectionSize(100)
-        self.tblResult.horizontalHeader().setStretchLastSection(True)
-        self.tblResult.verticalHeader().setVisible(False)
-        self.tblResult.verticalHeader().setStretchLastSection(False)
+        self.tblResult.horizontalHeader().setDefaultSectionSize(300)
+        self.tblResult.horizontalHeader().setMinimumSectionSize(1)
+        self.tblResult.horizontalHeader().setSortIndicatorShown(False)
+        self.tblResult.verticalHeader().setMinimumSectionSize(0)
         self.verticalLayout_2.addWidget(self.tblResult)
         self.verticalLayout_3.addLayout(self.verticalLayout_2)
 
@@ -117,5 +124,9 @@ class Ui_InfoSearch(object):
         self.lblStatus.setText(_translate("InfoSearch", "Loading"))
         self.lblResult.setText(_translate("InfoSearch", "List of Items Found:"))
         self.tblResult.setToolTip(_translate("InfoSearch", "Click on a row to view subscriber information"))
+        item = self.tblResult.horizontalHeaderItem(0)
+        item.setText(_translate("InfoSearch", "Packet"))
+        item = self.tblResult.horizontalHeaderItem(1)
+        item.setText(_translate("InfoSearch", "XML Filename"))
 
 import rsrc_rc

@@ -28,7 +28,7 @@ class DatabaseFinder(QtCore.QRunnable):
 
         self.mobile_numbers = task.mobile_numbers
         self.signals = SignalFactory()
-        self.logger = logging.getLogger(__path__)
+        self.logger = logging.getLogger(__name__)
 
     def run(self):
         self.logger.info('Database search started')
