@@ -113,6 +113,7 @@ class InfoSearch(QtWidgets.QWidget, Ui_InfoSearch):
     def on_tblResult_itemClicked(self, item):
         packet = self.tblResult.item(item.row(), 0).text()
         xmlfile = self.tblResult.item(item.row(), 1).text()
-        #dialog = ViewerDlg(parent=self, item=FEPRecord(packet, xmlfile))
-        # dialog.setModal(True)
-        # dialog.show()
+        dialog = SubscriberInfo(FEPRecord(packet, xmlfile), parent=self.parent())
+
+        if dialog.exec():
+            return

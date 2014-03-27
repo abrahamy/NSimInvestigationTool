@@ -40,6 +40,7 @@ class FEPRecord(object):
         raise AttributeError
 
     def __init__(self, zipf, xmlf):
+        self.packet_name, self.xml_filename = zipf, xmlf
         try:
             with zipfile.ZipFile(zipf) as input:
                 tree = ET.fromstring(input.open(xmlf).read())
@@ -66,7 +67,8 @@ class FEPRecord(object):
             ('ResidentialAddressState', './/NigeriaSIMDemographics/ResidentialAddressState', None),
             ('Nationality', './/NigeriaSIMDemographics/Nationality', None),
             ('StateofOrigin', './/NigeriaSIMDemographics/StateofOrigin', None),
-            ('MainMobileNumber', './/NigeriaSIMDemographics/MainMobileNumber',None),
+            ('MainMobileNumber', './/NigeriaSIMDemographics/MainMobileNumber', None),
+            ('OtherMobileNumbers', './/NigeriaSIMDemographics/OtherMobileNumbers', ''),
             ('_PotraitImage', './/NigeriaSIMDemographics/PortraitData/PotraitImage', None),
             ('_ImageType', './/NigeriaSIMDemographics/PortraitData/ImageType', None),
             ('_ImageCompression', './/NigeriaSIMDemographics/PortraitData/ImageCompression', None),
@@ -76,7 +78,7 @@ class FEPRecord(object):
         for item in attrs:
             attr, path, default_value = item
             try:
-                value = b64decode(tree.findall(path)[0].text) if attr in ['_PotraitImage',] else tree.findall(path)[0].text
+                value = b64decode(tree.findall(path)[0].text) if attr in ['_PotraitImage'] else tree.findall(path)[0].text
                 setattr(self, attr, value)
             except:
                 setattr(self, attr, default_value or '')
