@@ -26,20 +26,22 @@ class DBSearch(QtWidgets.QWidget, Ui_SearchForm):
 
         self.finder = None
 
-        self.logger = logging.getLogger(__path__)
+        self.logger = logging.getLogger(__name__)
 
     @QtCore.pyqtSlot()
     def on_btnGetFile_clicked(self):
-        file_name = QtWidgets.QFileDialog.getOpenFileName('Open File', QtCore.QDir.homePath(), 'Text Files (*.txt *.rtf)')
-        try:
-            with open(file_name) as source:
-                mobile_nos = source.read().split(',')
+        file_name = QtWidgets.QFileDialog.getOpenFileName(self, 'Open File', QtCore.QDir.homePath(), 'Text Files (*.txt *.rtf)')[0]
 
-                self.txtMobileNos.setText(clean(mobile_nos).join(','))
+        if file_name:
+            try:
+                with open(file_name) as source:
+                    mobile_nos = source.read().split(',')
 
-        except Exception as e:
-            self.logger.error(repr(e))
-            QtWidgets.QMessageBox.critical('Error', 'Unable to read from selected file.')
+                    self.txtMobileNos.setText(','.join(clean(mobile_nos)))
+
+            except Exception as e:
+                self.logger.error(repr(e))
+                QtWidgets.QMessageBox.critical(self, 'Error', 'Unable to read from selected file.')
 
     @QtCore.pyqtSlot(str)
     def on_txtMobileNos_textChanged(self, text):
@@ -48,7 +50,7 @@ class DBSearch(QtWidgets.QWidget, Ui_SearchForm):
 
     @QtCore.pyqtSlot()
     def on_btnSearch_clicked(self):
-        if self.txtMobileNos.text().strip() == '':
+        if self.txtMobileNos.toPlainText().strip() == '':
             QtWidgets.QMessageBox.information(self, 'Info', 'You have not entered a mobile number.')
             return
 
@@ -58,13 +60,10 @@ class DBSearch(QtWidgets.QWidget, Ui_SearchForm):
 
         self.txtResult.setPlainText('')
 
-        del self.finder
-        self.finder = None
-
         self.startSearch()
 
     def startSearch(self):
-        task = FindInDb(self.txtMobileNo.text().strip())
+        task = FindInDb(self.txtMobileNo.toPlainText().strip())
         self.finder = DatabaseFinder(task)
 
         self.finder.signals.completedWithResult.connect(self.on_search_completed)
@@ -80,27 +79,30 @@ class DBSearch(QtWidgets.QWidget, Ui_SearchForm):
     def on_search_completed(self, rows):
         self.timer.stop()
         self.btnSearch.setEnabled(True)
+        self.lblStatus.setText('')
         self.setCursor(QtCore.Qt.ArrowCursor)
         self.finder = None
 
-        text = 'Mobile Number\tPacket\tXML Filename\n%s' % [row.join('\t') for row in rows].join('\n')
+        text = 'Mobile Number\tPacket\tXML Filename\n%s' % '\n'.join(['\t'.join(row) for row in rows])
         self.txtResult.setPlainText(text)
 
         QtWidgets.QMessageBox.information(self, 'Info', 'Search Completed!')
 
     @QtCore.pyqtSlot()
-    def on_btnSaveAs_clicked(self, item):
-        file_name = QtWidgets.QFileDialog.getSaveFileName('Save File', QtCore.QDir.homePath(), 'Text Files (*.txt *.rtf)')
-        try:
-            with open(file_name, 'w') as dest:
-                dest.write(self.txtResult.text())
+    def on_btnSaveAs_clicked(self):
+        file_name = QtWidgets.QFileDialog.getSaveFileName(self, 'Save File', QtCore.QDir.homePath(), 'Text Files (*.txt *.rtf)')[0]
+        if file_name:
+            try:
+                with open(file_name, 'w') as dest:
+                    dest.write(self.txtResult.toPlainText())
 
-            QtWidgets.QMessageBox.information(self, 'Info', 'Result saved!')
+                QtWidgets.QMessageBox.information(self, 'Info', 'Result saved!')
 
-        except Exception as e:
-            self.logger.error(repr(e))
-            message = 'Unable to write file. Please ensure that the current user has write access to the selected file.'
-            QtWidgets.QMessageBox.critical(self, 'Error', message)
+            except Exception as e:
+                self.logger.error(repr(e))
+                message = ('Unable to write file. Please ensure that the ',
+                           'current user has write access to the selected file.').join('')
+                QtWidgets.QMessageBox.critical(self, 'Error', message)
 
     @QtCore.pyqtSlot()
     def on_timeout(self):

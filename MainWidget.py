@@ -16,9 +16,20 @@ class MainWidget(QtWidgets.QTabWidget, Ui_MainWidget):
         self.retranslateUi(self)
 
     @QtCore.pyqtSlot()
-    def on_btnInfoSearch_clicked(self):
-        self.insertTab(InfoSearch(), 1)
+    def on_btnFileSystemSearch_clicked(self):
+        self.insert_new_tab(InfoSearch(self), 'Retrieve Subscriber Information')
 
     @QtCore.pyqtSlot()
-    def on_btnDbSearch_click(self):
-        self.insertTab(DBSearch(), 1)
+    def on_btnDbSearch_clicked(self):
+        self.insert_new_tab(DBSearch(self), 'Find Packet Names')
+
+    def insert_new_tab(self, widget, tab_text):
+        for tab_index in range(self.count()):
+            if self.tabText(tab_index) == tab_text:
+                self.setCurrentIndex(tab_index)
+                return
+
+        new_tab_index = self.count()
+        self.insertTab(new_tab_index, widget, tab_text)
+        self.setTabEnabled(new_tab_index, True)
+        self.setCurrentIndex(new_tab_index)
