@@ -3,6 +3,7 @@ __author__ = 'Abraham Yusuf <yabraham@swglobal.com>'
 import os
 import logging
 
+from jinja2 import Template
 from PyQt5 import QtCore, QtWidgets, QtPrintSupport
 
 from datastructures import FEPRecord
@@ -56,34 +57,25 @@ class SubscriberInfo(QtWidgets.QDialog, Ui_SubscriberInfo):
             self.logger.error('Error: %s\tTemplate File: %s' % (repr(e), template_name))
             return
 
-        html.replace('{{packet}}', subscriber.packet_name)
-        html.replace('{{photo_uri}}', self.write_image_data(subscriber._PotraitImage))
-        html.replace('{{xml_file}}', subscriber.xml_filename)
-        html.replace('{{fep_code}}', subscriber.FEPCode)
-        html.replace('{{fep_tracking_id}}', subscriber.FEPTrackingID)
-        html.replace('{{registration_type}}', subscriber.RegistrationType)
-        html.replace('{{folio_version}}', subscriber.FolioVersion)
-        html.replace('{{subscriber_id}}', subscriber.SubscriberID)
-        html.replace('{{registration_date}}', subscriber.RegistrationDate)
-        html.replace('{{registration_time}}', subscriber.RegistrationTime)
-        html.replace('{{registration_state}}', subscriber.RegistrationState)
-        html.replace('{{registration_lga}}', subscriber.RegistrationLGA)
-        html.replace('{{surname}}', subscriber.Surname)
-        html.replace('{{first_name}}', subscriber.FirstName)
-        html.replace('{{mothers_maiden_name}}', subscriber.MotherMaidenName)
-        html.replace('{{gender}}', subscriber.Gender)
-        html.replace('{{date_of_birth}}', subscriber.DateOfBirth)
-        html.replace('{{residential_address}}', subscriber.ResidentialAddress)
-        html.replace('{{residential_address_state}}', subscriber.ResidentialAddressState)
-        html.replace('{{residential_address_lga}}', subscriber.ResidentialAddressLGA)
-        html.replace('{{nationality}}', subscriber.Nationality)
-        html.replace('{{state_of_origin}}', subscriber.StateofOrigin)
-        html.replace('{{main_mobile_number}}', subscriber.MainMobileNumber)
-        html.replace('{{other_mobile_numbers}}', subscriber.OtherMobileNumbers)
+        template = Template(html)
+        data = dict(
+            packet=subscriber.packet_name, photo_uri=self.write_image_data(subscriber._PotraitImage),
+            xml_file=subscriber.xml_filename, fep_code=subscriber.FEPCode, fep_tracking_id=subscriber.FEPTrackingID,
+            registration_type=subscriber.RegistrationType, folio_version=subscriber.FolioVersion,
+            subscriber_id=subscriber.SubscriberID, registration_date=subscriber.RegistrationDate,
+            registration_time=subscriber.RegistrationTime, registration_state=subscriber.RegistrationState,
+            registration_lga=subscriber.RegistrationLGA, surname=subscriber.Surname, first_name=subscriber.FirstName,
+            mothers_maiden_name=subscriber.MotherMaidenName, gender=subscriber.Gender,
+            date_of_birth=subscriber.DateOfBirth, residential_address=subscriber.ResidentialAddress,
+            residential_address_state=subscriber.ResidentialAddressState,
+            residential_address_lga=subscriber.ResidentialAddressLGA, nationality=subscriber.Nationality,
+            state_of_origin=subscriber.StateofOrigin, main_mobile_number=subscriber.MainMobileNumber,
+            other_mobile_numbers=subscriber.OtherMobileNumbers
+        )
 
         try:
             with open(os.path.join(self.search_path, self.html_filename), 'w') as outfile:
-                outfile.write(html)
+                outfile.write(template.render(data))
 
             self.textBrowser.setSource(QtCore.QUrl(self.html_filename))
 

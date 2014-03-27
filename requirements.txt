@@ -1,0 +1,4 @@
+cx-Freeze==4.3.1
+jinja2==2.7.2
+markupsafe==0.19
+pymssql==2.1.0
