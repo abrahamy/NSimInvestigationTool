@@ -69,6 +69,7 @@ class DBSearch(QtWidgets.QWidget, Ui_DBSearch):
         self.finder = DatabaseFinder(task)
 
         self.finder.signals.completedWithResult.connect(self.on_search_completed)
+        self.finder.signals.onError.connect(self.on_error)
 
         self.lblStatus.setText('Loading')
         self.btnSearch.setEnabled(False)
@@ -79,20 +80,29 @@ class DBSearch(QtWidgets.QWidget, Ui_DBSearch):
 
     @QtCore.pyqtSlot(tuple)
     def on_search_completed(self, rows):
-        self.timer.stop()
-        self.btnSearch.setEnabled(True)
+        self.reset_ui()
 
+        text = 'Mobile Number\tPacket\tXML Filename\n%s' % '\n'.join(['\t'.join(row) for row in rows])
+        self.txtResult.setPlainText(text)
+        
         if self.txtResult.toPlainText().strip():
             self.btnSaveAs.setEnabled(True)
+
+        QtWidgets.QMessageBox.information(self, 'Info', 'Search Completed!')
+        
+    @QtCore.pyqtSlot(str)
+    def on_error(self, error_msg):
+        self.reset_ui()
+        
+        QtWidgets.QMessageBox.critical(self, 'Error', error_msg)
+        
+    def reset_ui(self):
+        self.timer.stop()
+        self.btnSearch.setEnabled(True)
 
         self.lblStatus.setText('')
         self.setCursor(QtCore.Qt.ArrowCursor)
         self.finder = None
-
-        text = 'Mobile Number\tPacket\tXML Filename\n%s' % '\n'.join(['\t'.join(row) for row in rows])
-        self.txtResult.setPlainText(text)
-
-        QtWidgets.QMessageBox.information(self, 'Info', 'Search Completed!')
 
     @QtCore.pyqtSlot()
     def on_btnSaveAs_clicked(self):
