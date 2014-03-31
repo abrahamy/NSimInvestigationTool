@@ -42,8 +42,11 @@ class InfoSearch(QtWidgets.QWidget, Ui_InfoSearch):
     @QtCore.pyqtSlot()
     def on_btnGetFolder_clicked(self):
         folder = QtWidgets.QFileDialog.getExistingDirectory(self, 'FEP/MNO Folder', QtCore.QDir.homePath())
+
         if folder:
-            self.lblFolder.setText(folder)
+            current_text = self.lblFolder.text()
+            new_text = ',\n'.join([current_text, folder]) if len(current_text) else folder
+            self.lblFolder.setText(new_text)
 
     @QtCore.pyqtSlot()
     def on_btnGetFile_clicked(self):
@@ -103,6 +106,7 @@ class InfoSearch(QtWidgets.QWidget, Ui_InfoSearch):
     @QtCore.pyqtSlot()
     def on_search_completed(self):
         self.lblStatus.setText('')
+        self.lblFolder.setText('')
         self.btnSearch.setEnabled(True)
         self.setCursor(QtCore.Qt.ArrowCursor)
         QtWidgets.QMessageBox.information(self, 'Search completed!', 'Found %s matches.' % self.tblResult.rowCount())

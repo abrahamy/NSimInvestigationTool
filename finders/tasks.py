@@ -30,9 +30,9 @@ class Task(object):
 
 
 class FindInFolder(Task):
-    def __init__(self, mobile_nos, folder):
+    def __init__(self, mobile_nos, folders):
         self._mobile_numbers_str = mobile_nos
-        self.folder = folder
+        self.folders = [folder.strip() for folder in folders.split(',')] if isinstance(folders, str) else folders
 
 
 class FindInDb(Task):
