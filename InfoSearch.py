@@ -44,6 +44,10 @@ class InfoSearch(QtWidgets.QWidget, Ui_InfoSearch):
         folder = QtWidgets.QFileDialog.getExistingDirectory(self, 'FEP/MNO Folder', QtCore.QDir.homePath())
 
         if folder:
+            if self.lblFolder.text().find(folder) != -1:
+                QtWidgets.QMessageBox.information(self, 'Info', 'Duplicate Entry!')
+                return
+
             current_text = self.lblFolder.text()
             new_text = ',\n'.join([current_text, folder]) if len(current_text) else folder
             self.lblFolder.setText(new_text)

@@ -1,6 +1,17 @@
 __author__ = 'Abraham Yusuf <yabraham@swglobal.com>'
 
 import re
+import functools
+
+
+def remove_duplicates(lst):
+    def reducer(accumulator, item):
+        if item not in accumulator:
+            accumulator.append(item)
+
+        return accumulator
+
+    return functools.reduce(reducer, lst, [])
 
 
 def clean(lst):
@@ -26,13 +37,20 @@ class Task(object):
                 mobile_numbers.append('234%s' % mobile_no[1:])
                 mobile_numbers.append('+234%s' % mobile_no[1:])
 
-        return clean(mobile_numbers)
+        return remove_duplicates(clean(mobile_numbers))
 
 
 class FindInFolder(Task):
     def __init__(self, mobile_nos, folders):
         self._mobile_numbers_str = mobile_nos
-        self.folders = [folder.strip() for folder in folders.split(',')] if isinstance(folders, str) else folders
+        self._folders = folders
+
+    @property
+    def folders(self):
+        _folders = self._folders
+        tmp = [folder.strip() for folder in _folders.split(',')] if isinstance(_folders, str) else _folders
+
+        return remove_duplicates(tmp)
 
 
 class FindInDb(Task):
