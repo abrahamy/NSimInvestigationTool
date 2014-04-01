@@ -14,7 +14,7 @@ class FileSystemFinder(QtCore.QRunnable):
     def __init__(self, task):
         super(FileSystemFinder, self).__init__()
 
-        self.folder = task.folder
+        self.folders = task.folders
         self.mobile_numbers = task.mobile_numbers
         self.signals = SignalFactory()
 
@@ -30,9 +30,19 @@ class FileSystemFinder(QtCore.QRunnable):
 
         return False
 
+    @classmethod
+    def get_zip_files(cls, folders):
+        zip_files = []
+        for folder in folders:
+            for (dirpath, dirnames, filenames) in os.walk(folder):
+                filtered = filter(lambda filename: filename.lower().endswith('.zip'), filenames)
+                zip_files.extend([os.path.join(dirpath, filename) for filename in filtered])
+
+        return zip_files
+
     def run(self):
         self.logger.info('New search started in %s' % self.folder)
-        zfiles = [os.path.join(self.folder, i) for i in os.listdir(self.folder) if i.lower().endswith('.zip')]
+        zfiles = self.__class__.get_zip_files(self.folders)
         total_count = len(zfiles)
         current_count = 0
         num_found = 0
