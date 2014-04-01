@@ -68,5 +68,5 @@ class FileSystemFinder(QtCore.QRunnable):
             except Exception as e:
                 self.logger.error('Encountered and error while processing [%s]. Error Message: [%s]' % (zfile, repr(e)))
 
-        self.logger.info('Search completed in %s' % self.folder)
+        self.logger.info('Search completed in %s' % self.folders)
         self.signals.completed.emit()
