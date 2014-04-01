@@ -41,7 +41,7 @@ class FileSystemFinder(QtCore.QRunnable):
         return zip_files
 
     def run(self):
-        self.logger.info('New search started in %s' % self.folder)
+        self.logger.info('New search started in %s' % repr(self.folders))
         zfiles = self.__class__.get_zip_files(self.folders)
         total_count = len(zfiles)
         current_count = 0
